@@ -10,7 +10,8 @@ const errorHandler = require('./helpers/error-handler');
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(authJwt());
-// app.use(errorHandler);
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'))
+app.use(errorHandler);
 
 
 // Routes for different api endpoints
@@ -50,6 +51,5 @@ mongoose.connect(process.env.CONNECTION_STRING)
 });
 
 app.listen(3000, () => {
-    console.log(process.env.CONNECTION_STRING);
     console.log('server running on http://localhost:3000');
 });

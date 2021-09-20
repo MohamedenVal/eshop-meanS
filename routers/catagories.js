@@ -60,7 +60,7 @@ router.put('/:id', async (req, res) => {
     res.status(200).send(category);
 });
 
-
+// deleting a specific category
 router.delete('/:id', (req, res) => {
     Category.findByIdAndRemove(req.params.id).then(category => {
         if(category) {
