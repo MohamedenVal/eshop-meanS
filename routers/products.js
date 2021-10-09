@@ -41,7 +41,7 @@ router.get(`/`, async (req, res) => {
         filter = { category: req.query.categories.split(',') };
     }
 
-    const productList = await Product.find(filter);
+    const productList = await Product.find(filter).populate('category');
 
     if (!productList) {
         res.status(500).json({success: false});
@@ -51,7 +51,7 @@ router.get(`/`, async (req, res) => {
 
 // get the product with the specified id 
 router.get(`/:id`, async (req, res) => {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate('category');
 
     if (!product) {
         res.status(500).json({success: false, message: 'There is no product with the given id'});
@@ -95,13 +95,14 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
 } );
 
 // updating a specific product
-router.put('/:id', async (req, res) => {
+router.put('/:id', uploadOptions.single('image'), async (req, res) => {
     if(!mongoose.isValidObjectId(req.params.id)){
         res.status(400).send('Invalid product id');
     }
 
     const category = await Category.findById(req.body.category);
     if(!category) {
+        console.log(req.body.category);
         return res.status(400).send('Invalid Category ');
     }
 
@@ -114,6 +115,7 @@ router.put('/:id', async (req, res) => {
     if(file) {
         const fileName = file.filename;
         const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+        imagepath = `${basePath}${fileName}`;
     } else {
         imagePath = product.image;
     }

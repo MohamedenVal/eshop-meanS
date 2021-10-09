@@ -2,9 +2,13 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-require('dotenv/config');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
+const cors = require('cors')
+require('dotenv/config');
+
+app.use(cors());
+app.options('*', cors())
 
 // midleware 
 app.use(express.json());
@@ -12,6 +16,7 @@ app.use(morgan('tiny'));
 app.use(authJwt());
 app.use('/public/uploads', express.static(__dirname + '/public/uploads'))
 app.use(errorHandler);
+
 
 
 // Routes for different api endpoints
@@ -41,8 +46,9 @@ app.use(`${api}/users`, usersRouter);
  * this added piece of code I don't uderstand 
  * so I removed it since it doesn't effect the script
  *
+ * CONNECTION_STRING
  */
-mongoose.connect(process.env.CONNECTION_STRING)
+mongoose.connect(process.env.local_CONN)
 .then( () => {
     console.log('connection is ready!');    
 })
