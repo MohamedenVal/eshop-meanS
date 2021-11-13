@@ -71,7 +71,7 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
     if(!file) return res.status(400).send('No image in request');
 
     const fileName = req.file.filename;
-    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    const basePath = `https://rimcode-rimmart-backend.herokuapp.com/public/uploads/`;
     let product = new Product({
         name: req.body.name,
         description: req.body.description,
@@ -114,7 +114,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
 
     if(file) {
         const fileName = file.filename;
-        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+        const basePath = `https://rimcode-rimmart-backend.herokuapp.com/public/uploads/`;
         imagepath = `${basePath}${fileName}`;
     } else {
         imagePath = product.image;
@@ -192,7 +192,7 @@ router.put(
 
         const files = req.files;
         let imagesPaths = [];
-        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+        const basePath = `https://rimcode-rimmart-backend.herokuapp.com/public/uploads/`;
         if(files) {
             files.map(file => {
                 imagesPaths.push(`${basePath}${file.filename}`)
