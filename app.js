@@ -10,7 +10,7 @@ require('dotenv/config');
 app.use(cors());
 app.options('*', cors())
 
-// midleware 
+// middleware 
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(authJwt());
@@ -22,6 +22,7 @@ app.use(errorHandler);
 // Routes for different api endpoints
 const productsRouter = require('./routers/products');
 const categoriesRouter = require('./routers/catagories');
+const storesRouter = require('./routers/stores');
 const ordersRouter = require('./routers/orders');
 const usersRouter = require('./routers/users');
 
@@ -31,6 +32,7 @@ const api = process.env.API_URL;
 // routers 
 app.use(`${api}/products`, productsRouter);
 app.use(`${api}/categories`, categoriesRouter);
+app.use(`${api}/stores`, storesRouter);
 app.use(`${api}/orders`, ordersRouter);
 app.use(`${api}/users`, usersRouter);
 
@@ -43,11 +45,12 @@ app.use(`${api}/users`, usersRouter);
  * useUnifiedTopology: true,
  * dbName: 'eshop-database'
  * })
- * this added piece of code I don't uderstand 
+ * this added piece of code I don't understand 
  * so I removed it since it doesn't effect the script
  *
  * CONNECTION_STRING
  */
+
 mongoose.connect(process.env.local_CONN)
 .then( () => {
     console.log('connection is ready!');    

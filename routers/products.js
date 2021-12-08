@@ -3,7 +3,8 @@ const {Category} = require('../models/category');
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const multer = require('multer')
+const multer = require('multer');
+const { Store } = require('../models/store');
 
 const FILE_TYPE_MAP = {
     'image/png': 'png',
@@ -41,7 +42,7 @@ router.get(`/`, async (req, res) => {
         filter = { category: req.query.categories.split(',') };
     }
 
-    const productList = await Product.find(filter).populate('category');
+    const productList = await Product.find(filter).populate('category').populate('store');
 
     if (!productList) {
         res.status(500).json({success: false});
@@ -51,7 +52,7 @@ router.get(`/`, async (req, res) => {
 
 // get the product with the specified id 
 router.get(`/:id`, async (req, res) => {
-    const product = await Product.findById(req.params.id).populate('category');
+    const product = await Product.findById(req.params.id).populate('category').populate('store');
 
     if (!product) {
         res.status(500).json({success: false, message: 'There is no product with the given id'});
@@ -65,6 +66,10 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
     // Making sure the category exists
     const category = await Category.findById(req.body.category);
     if(!category) return res.status(400).send('Invalid Category');
+
+    // Making sure the store exists
+    const store = await Store.findById(req.body.store);
+    if(!store) return res.status(400).send('Invalid Store');
 
     // Making sure the request has a file path in it
     const file = req.file;
@@ -80,6 +85,7 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
         brand: req.body.brand,
         price: req.body.price,
         category: req.body.category,
+        category: req.body.store,
         countInStock: req.body.countInStock,
         rating: req.body.rating,
         numReviews: req.body.numReviews,
@@ -106,6 +112,13 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
         return res.status(400).send('Invalid Category ');
     }
 
+
+    const store = await Store.findById(req.body.store);
+    if(!store) {
+        console.log(req.body.store);
+        return res.status(400).send('Invalid Store ');
+    }
+
     const product = await Product.findById(req.params.id);
     if(!product) return res.status(400).send('Invalid product ');
 
@@ -130,6 +143,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
             brand: req.body.brand,
             price: req.body.price,
             category: req.body.category,
+            store: req.body.store,
             countInStock: req.body.countInStock,
             rating: req.body.rating,
             numReviews: req.body.numReviews,
