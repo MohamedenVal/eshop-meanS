@@ -85,7 +85,7 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
         brand: req.body.brand,
         price: req.body.price,
         category: req.body.category,
-        category: req.body.store,
+        store: req.body.store,
         countInStock: req.body.countInStock,
         rating: req.body.rating,
         numReviews: req.body.numReviews,
