@@ -8,6 +8,17 @@ router.get('/', async (req, res) => {
     const categoryList = await Category.find();
 
     if(!categoryList) {
+        res.status(500).json({ success: false});
+    };
+
+    res.status(200).send(categoryList);
+});
+
+// Get category using the name
+router.get('/name/:name', async (req, res) => {
+    const categoryList = await Category.find( { name: req.params.name });
+
+    if(!categoryList) {
         res.status(500).json({ sucess: false});
     };
 
@@ -15,7 +26,7 @@ router.get('/', async (req, res) => {
 });
 
 
-// get request for single categorie based on id parameter in the url
+// get request for single category based on id parameter in the url
 router.get('/:id', async(req, res) => {
     const category = await Category.findById(req.params.id);
 
@@ -35,7 +46,7 @@ router.post('/', async (req, res) => {
     category = await category.save();
 
     if(!category){
-        return res.status(404).send('The category could be created!');
+        return res.status(404).send('The category could not be created!');
     };
 
     res.send(category);

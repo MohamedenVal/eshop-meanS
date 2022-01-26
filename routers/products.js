@@ -1,5 +1,5 @@
-const {Product} = require('../models/product');
-const {Category} = require('../models/category');
+const { Product } = require('../models/product');
+const { Category } = require('../models/category');
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -54,6 +54,17 @@ router.get(`/`, async (req, res) => {
 // get the product with the specified id 
 router.get(`/:id`, async (req, res) => {
     const product = await Product.findById(req.params.id).populate('category').populate('store');
+
+    if (!product) {
+        res.status(500).json({success: false, message: 'There is no product with the given id'});
+    }
+    res.send(product);
+} );
+
+// get the product with the specified id 
+router.get(`/name/:name`, async (req, res) => {
+    const product = await Product.find({ name: req.params.name });
+    
 
     if (!product) {
         res.status(500).json({success: false, message: 'There is no product with the given id'});
@@ -129,7 +140,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
     if(file) {
         const fileName = file.filename;
         const basePath = `https://rimcode-rimmart-backend.herokuapp.com/public/uploads/`;
-        imagepath = `${basePath}${fileName}`;
+        imagePath = `${basePath}${fileName}`;
     } else {
         imagePath = product.image;
     }
