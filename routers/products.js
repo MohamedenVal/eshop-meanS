@@ -38,12 +38,17 @@ const uploadOptions = multer({ storage: storage })
 // get the products with the option to limiting the catagories
 router.get(`/`, async (req, res) => {
 
+    let productList;
     let filter = {};
     if(req.query.categories) {
         filter = { category: req.query.categories.split(',') };
     }
-
-    const productList = await Product.find(filter).populate('category').populate('store');
+    try {
+        productList = await Product.find(filter).populate('category').populate('store');
+        
+    } catch (error) {
+        console.log("Erro loged in the console: ", error);
+    }
 
     if (!productList) {
         res.status(500).json({success: false});
@@ -89,6 +94,7 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
 
     const fileName = req.file.filename;
     const basePath = `https://rimcode-rimmart-backend.herokuapp.com/public/uploads/`;
+    
     let product = new Product({
         name: req.body.name,
         description: req.body.description,
